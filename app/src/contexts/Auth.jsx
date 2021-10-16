@@ -33,6 +33,7 @@ export function AuthProvider({ children }) {
     currentUser,
     signInWithGoogleAccount,
   };
+
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}

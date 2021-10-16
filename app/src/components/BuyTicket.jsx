@@ -15,34 +15,14 @@ import {
   Stack,
   Tooltip,
   Typography,
-  Box,
 } from "@mui/material";
+import PropTypes, { object } from "prop-types";
+import { useCart } from "../contexts/Cart";
 
 const GST_RATE = 0.15;
 
-const ticketData = [
-  {
-    name: "adult",
-    label: "Adult",
-    desc: "age > 20, vaccinated person",
-    unit: 29.99,
-  },
-  {
-    name: "kid",
-    label: "Kid",
-    desc: "age < 14, A+ in school",
-    unit: 14.99,
-  },
-  {
-    name: "family",
-    label: "Family & DOG & Cat",
-    desc: "At most 5 people",
-    unit: 99.84,
-  },
-];
-
-export default function BuyTicket() {
-  const [quantity, setQuantity] = useState(null);
+export default function BuyTicket({ ticketData }) {
+  const [ticketSum, setTicketSum] = useState(null);
   const [subtotal, setSubtotal] = useState(0);
 
   function sumValues(obj) {
@@ -50,16 +30,19 @@ export default function BuyTicket() {
   }
   useEffect(() => {
     // console.log(subtotal);
-    setSubtotal(sumValues(quantity));
-  }, [quantity]);
+    setSubtotal(sumValues(ticketSum));
+  }, [ticketSum]);
 
   function handleQtyChange(name, qty, unit) {
-    return setQuantity({ ...quantity, [name]: qty * unit });
+    return setTicketSum({ ...ticketSum, [name]: qty * unit });
   }
 
   function ccyFormat(num) {
     return num && `${num.toFixed(2)}`;
   }
+
+  const { cartItems } = useCart();
+  console.log(cartItems);
 
   return (
     <>
@@ -108,7 +91,7 @@ export default function BuyTicket() {
                   </FormControl>
                 </TableCell>
                 <TableCell align="right">
-                  {quantity && ccyFormat(quantity[name])}
+                  {ticketSum && ccyFormat(ticketSum[name])}
                 </TableCell>
               </TableRow>
             ))}
@@ -129,15 +112,19 @@ export default function BuyTicket() {
       </TableContainer>
       {subtotal !== 0 && (
         <Stack
-          sx={{ m: 2 }}
+          sx={{ mt: 3 }}
           direction="row"
           spacing={3}
           justifyContent="center"
         >
           <Button variant="contained">Pay Now</Button>
-          <Button variant="contained">Keep browse</Button>
+          <Button variant="contained">Add to Cart</Button>
         </Stack>
       )}
     </>
   );
 }
+
+BuyTicket.propTypes = {
+  ticketData: PropTypes.arrayOf(PropTypes.object).isRequired,
+};

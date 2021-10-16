@@ -57,7 +57,7 @@ function a11yProps(index) {
   };
 }
 
-export default function TicketCard() {
+export default function TicketCard({ data }) {
   const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = () => {
@@ -66,27 +66,27 @@ export default function TicketCard() {
 
   const [value, setValue] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (_event, newValue) => {
     setValue(newValue);
   };
 
   return (
-    <Card>
+    <Card sx={{ mb: 3 }}>
       <CardHeader
-        title="Shrimp and Chorizo Paella"
+        title={data.title}
         subheader="Fri, 15 Oct, 9:00 am – Sun, 17 Oct, 5:00 am"
       />
       <CardMedia
         component="img"
         height="194"
-        image="https://mui.com/static/images/cards/paella.jpg"
+        image={data.photoURL}
         alt="Paella dish"
       />
       <CardContent>
         <Stack direction="row">
           <LocationOnIcon color="action" />
           <Typography variant="body2" color="text.main">
-            Mystery Creek Events Centre 125 Mystery Creek Rd, Ohaupo, Hamilton
+            {data.location}
           </Typography>
         </Stack>
       </CardContent>
@@ -119,27 +119,16 @@ export default function TicketCard() {
             </Tabs>
           </Box>
           <TabPanel value={value} index={0}>
-            <Typography>
-              NZMCA Motorhome, Caravan & Leisure Show - Hamilton Come and see
-              what we have on show in Hamilton! NZMCA Motorhome, Caravan &
-              Leisure Show in Hamilton specialises in providing a complete
-              experience for all visitors. All industry leaders, plus a huge
-              array of industry related accessory providers will be present,
-              offering a huge selection of everything imaginable to make your
-              outdoor lifestyle complete, or simply offer expert advice. See all
-              the latest products, talk to the experts, and be in to win
-              fantastic prizes over the three days! As part of our commitment to
-              long term sustainability, we will no longer be providing
-              complimentary plastic bags on entry to the show. We suggest
-              bringing your own reusable bags and making use of our Shop & Drop
-              service to store purchases while you are at the show.
-            </Typography>
+            <Typography>{data.desc}</Typography>
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <BuyTicket />
+            <BuyTicket ticketData={data.ticketData} />
           </TabPanel>
         </CardContent>
       </Collapse>
     </Card>
   );
 }
+TicketCard.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
