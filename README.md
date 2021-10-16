@@ -33,25 +33,33 @@ React
 
 https://www.npmjs.com/package/eslint-plugin-react
 
-## Login
+
+
+## Website Logic
+
+When user enter the URL of the website, he will be navigate to`TicketPage.jsx` and he could browse all those available events as well as event details and add the ticket they want to buy,  the cart will be holding the selected ticket state. 
+
+When they decided to checkout, after hit that button total cost would be displayed, there are to available choice, one is for purchase as a guest, another is purchase as a signed member.  As a signed user, they could see their history orders. As a guest probably a email with a reference code would be send to them.  
+
+### Login
 
 Simple google login and use user information to retrieve & storage bookings.
 
+use private and public router to redirection authenticated user to the ticket purchase page.
 
+### Events List
 
-## Events List
-
-Single page show a list of available events , uses MUI cards, seperate date time, show you have booked for number of ticket.
+Single page show a list of available events , uses MUI cards, separate date time, show you have booked for number of ticket.
 
 Click one of the event user would navigated to ticket page for that specific event. 
 
-## Event Booking
+### Event Booking
 
 Material Cards to contain event descriptions url, head picture, time etc.
 
 Ticket price,  show totally cost by user add more ticket, after user hit submit button booking date, tickets number, 
 
-## Query With GraphQL
+### Query With GraphQL
 
 use `useQuery` and `gql` execute each query and get the response.
 
@@ -90,7 +98,7 @@ createEvent({variables: {...vars}})
 
 
 
-Schema
+Schema for mogooDB
 
 ```js
 Event {
@@ -111,11 +119,9 @@ Event {
 }
 ```
 
+Schema for server
 
-
-
-
-```json
+```js
 type Event {
 	id:ID!
 	totalTicket:Int!

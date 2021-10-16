@@ -19,5 +19,6 @@ module.exports = {
   plugins: ["react", "prettier"],
   rules: {
     "prettier/prettier": "error",
+    "react/jsx-props-no-spreading": "off",
   },
 };
