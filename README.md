@@ -39,7 +39,7 @@ https://www.npmjs.com/package/eslint-plugin-react
 
 When user enter the URL of the website, he will be navigate to`TicketPage.jsx` and he could browse all those available events as well as event details and add the ticket they want to buy,  the cart will be holding the selected ticket state. 
 
-When they decided to checkout, after hit that button total cost would be displayed, there are to available choice, one is for purchase as a guest, another is purchase as a signed member.  As a signed user, they could see their history orders. As a guest probably a email with a reference code would be send to them.  
+When they decided to checkout, after hit that button total cost would be displayed, there are two available choice, one is for purchase as a guest, another is purchase as a signed member.  As a signed user, they could see their history orders(ref to database). As a guest probably a email with a reference code and list of tickets would be send to them.  
 
 ### Login
 
@@ -94,7 +94,7 @@ createEvent({variables: {...vars}})
 
 
 
-# Server
+# TODO : Server
 
 
 
@@ -150,7 +150,7 @@ type Query {
 
 
 
-# GraphQL notes
+# TODO : GraphQL Notes
 
 
 

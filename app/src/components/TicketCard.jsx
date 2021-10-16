@@ -15,7 +15,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Stack, Tab, Tabs, Box } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import PropTypes from "prop-types";
+import PropTypes, { shape, string, number, object } from "prop-types";
 import BuyTicket from "./BuyTicket";
 
 const ExpandMore = styled((props) => {
@@ -130,5 +130,18 @@ export default function TicketCard({ data }) {
   );
 }
 TicketCard.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  data: PropTypes.shape({
+    title: string,
+    photoURL: string,
+    location: string,
+    desc: string,
+    ticketData: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: string,
+        label: string,
+        desc: string,
+        unit: number,
+      })
+    ),
+  }).isRequired,
 };

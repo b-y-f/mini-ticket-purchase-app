@@ -1,6 +1,7 @@
-import { Container, Fab, Typography } from "@mui/material";
+/* eslint-disable no-console */
+import { Container, Typography } from "@mui/material";
 import React from "react";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ShoppingList from "./ShoppingList";
 import TicketCard from "./TicketCard";
 
 const fakeEventsData = [
@@ -56,23 +57,16 @@ const fakeEventsData = [
 ];
 
 export default function TicketsPage() {
-  const fabStyle = {
-    position: "fixed",
-    bottom: 24,
-    right: 24,
-  };
   return (
     <Container maxWidth="sm" style={{ marginTop: 80 }}>
       <Typography variant="h1" component="h2">
         tickets...
       </Typography>
       {fakeEventsData.map((t) => (
-        <TicketCard data={t} />
+        <TicketCard key={t.title} data={t} />
       ))}
 
-      <Fab sx={fabStyle}>
-        <ShoppingCartIcon />
-      </Fab>
+      <ShoppingList />
     </Container>
   );
 }

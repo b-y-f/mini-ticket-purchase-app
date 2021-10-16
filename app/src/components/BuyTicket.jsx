@@ -16,7 +16,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import PropTypes, { object } from "prop-types";
+import PropTypes, { string, number } from "prop-types";
 import { useCart } from "../contexts/Cart";
 
 const GST_RATE = 0.15;
@@ -117,8 +117,7 @@ export default function BuyTicket({ ticketData }) {
           spacing={3}
           justifyContent="center"
         >
-          <Button variant="contained">Pay Now</Button>
-          <Button variant="contained">Add to Cart</Button>
+          <Button variant="contained">Check Out</Button>
         </Stack>
       )}
     </>
@@ -126,5 +125,12 @@ export default function BuyTicket({ ticketData }) {
 }
 
 BuyTicket.propTypes = {
-  ticketData: PropTypes.arrayOf(PropTypes.object).isRequired,
+  ticketData: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: string,
+      label: string,
+      desc: string,
+      unit: number,
+    })
+  ).isRequired,
 };
