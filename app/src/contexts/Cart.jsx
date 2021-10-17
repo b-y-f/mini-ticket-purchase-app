@@ -14,7 +14,6 @@ export function useCart() {
 }
 
 export function CartProvider({ children }) {
-  // eslint-disable-next-line no-unused-vars
   const [currentTickets, setCurrentTickets] = useState(eventData);
 
   useEffect(() => {
@@ -56,10 +55,25 @@ export function CartProvider({ children }) {
     return false;
   }
 
+  function removeTicket(title, id) {
+    const convert = fromJS(currentTickets);
+    const indexEvent = currentTickets.findIndex((i) => i.title === title);
+    const indexTicket = currentTickets[indexEvent].tickets.findIndex(
+      (i) => i.id === id
+    );
+
+    const update = convert
+      .setIn([indexEvent, "tickets", indexTicket, "qty"], 0)
+      .setIn([indexEvent, "tickets", indexTicket, "sumCost"], 0)
+      .toJS();
+    setCurrentTickets(update);
+  }
+
   const value = {
     currentTickets,
     updateQty,
     applyPromo,
+    removeTicket,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

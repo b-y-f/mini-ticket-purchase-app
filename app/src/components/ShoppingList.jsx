@@ -18,7 +18,7 @@ const fabStyle = {
 };
 
 export default function ShoppingList() {
-  const { currentTickets } = useCart();
+  const { currentTickets, removeTicket } = useCart();
   // console.log("currentTickets", currentTickets);
 
   const [state, setState] = useState(false);
@@ -74,7 +74,11 @@ export default function ShoppingList() {
                           key={id}
                           sx={{ pl: 4 }}
                           secondaryAction={
-                            <IconButton edge="end" aria-label="delete">
+                            <IconButton
+                              onClick={() => removeTicket(title, id)}
+                              edge="end"
+                              aria-label="delete"
+                            >
                               <ClearIcon color="error" fontSize="small" />
                             </IconButton>
                           }

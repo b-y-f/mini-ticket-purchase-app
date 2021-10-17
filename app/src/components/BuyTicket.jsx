@@ -64,7 +64,7 @@ export default function BuyTicket({ ticketData, eventTitle }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {ticketData.map(({ id, label, desc, unit, sumCost }) => (
+            {ticketData.map(({ id, label, desc, unit, sumCost, qty }) => (
               <TableRow
                 key={id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -86,7 +86,7 @@ export default function BuyTicket({ ticketData, eventTitle }) {
                       onChange={({ target }) =>
                         handleQtyChange(id, target.value, unit)
                       }
-                      defaultValue={0}
+                      value={qty}
                       variant="standard"
                     >
                       {[...Array(10).keys()].map((num) => (
