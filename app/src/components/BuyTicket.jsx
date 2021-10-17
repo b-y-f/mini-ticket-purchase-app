@@ -23,28 +23,28 @@ import ccyFormat from "../utl/convert";
 export default function BuyTicket({ ticketData, eventTitle }) {
   const { updateQty, applyPromo } = useCart();
 
+  const [promoState, setPromoState] = useState({
+    input: "",
+    isPromoted: false,
+  });
+
   const [subtotal, setSubtotal] = useState(0);
 
   useEffect(() => {
     setSubtotal(ticketData.reduce((a, b) => a + b.sumCost, 0));
   }, [ticketData]);
 
-  const [promoState, setPromoState] = useState({
-    input: "",
-    isPromoted: false,
-    discountAmount: 0,
-  });
-
   function handleQtyChange(id, qty, unit) {
     updateQty(eventTitle, id, qty, unit);
   }
 
   function checkPromoCode() {
-    if (applyPromo(eventTitle, promoState.input)) {
+    const rate = applyPromo(eventTitle, promoState.input);
+    if (rate) {
       return setPromoState({
         input: "",
-        discountAmount: 999999,
         isPromoted: true,
+        rate,
       });
     }
     setPromoState({ ...promoState, input: "" });
@@ -106,15 +106,21 @@ export default function BuyTicket({ ticketData, eventTitle }) {
                 {promoState.isPromoted && (
                   <TableRow selected>
                     <TableCell colSpan={2} />
-                    <TableCell>Discount 8%</TableCell>
-                    <TableCell align="right">12</TableCell>
+                    <TableCell>{`Discount ${
+                      promoState.rate * 100
+                    }%`}</TableCell>
+                    <TableCell align="right">
+                      {ccyFormat(promoState.rate * subtotal)}
+                    </TableCell>
                   </TableRow>
                 )}
                 <TableRow selected>
                   <TableCell colSpan={2} />
                   <TableCell sx={{ fontWeight: "bold" }}>Sub Total</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }} align="right">
-                    {ccyFormat(subtotal)}
+                    {promoState.isPromoted
+                      ? ccyFormat(subtotal - promoState.rate * subtotal)
+                      : ccyFormat(subtotal)}
                   </TableCell>
                 </TableRow>
               </>

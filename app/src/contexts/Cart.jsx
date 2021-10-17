@@ -20,7 +20,6 @@ export function CartProvider({ children }) {
     setCurrentTickets(
       currentTickets.map((e) => ({
         ...e,
-        subtotal: 0,
         tickets: e.tickets.map((t) => ({ ...t, qty: 0, sumCost: 0 })),
       }))
     );
@@ -47,10 +46,10 @@ export function CartProvider({ children }) {
 
     if (userInput === PROMOTION.code) {
       const update = convert
-        .setIn([indexEvent, "promo"], PROMOTION.discount)
+        .setIn([indexEvent, "discount"], PROMOTION.discount)
         .toJS();
       setCurrentTickets(update);
-      return true;
+      return PROMOTION.discount;
     }
     return false;
   }

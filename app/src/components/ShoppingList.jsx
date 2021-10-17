@@ -34,14 +34,44 @@ export default function ShoppingList() {
     setState(open);
   };
 
+  function getDiscount(tickets, discount) {
+    if (discount) {
+      return tickets.reduce((a, b) => a + b.sumCost, 0) * discount;
+    }
+    return "";
+  }
+
   function getSubtotal(tickets) {
     return tickets.reduce((a, b) => a + b.sumCost, 0);
   }
 
-  function getTotalCost() {
-    return currentTickets.reduce((a, b) => a + getSubtotal(b.tickets), 0);
+  function totalDiscount() {
+    const whichOneDiscount = currentTickets.filter((i) => i.discount);
+    let discount = 0;
+    if (whichOneDiscount) {
+      discount = whichOneDiscount.reduce(
+        (i, j) => i + j.tickets.reduce((a, b) => a + b.sumCost * j.discount, 0),
+        0
+      );
+    }
+    return discount;
   }
 
+  function getTotalCost() {
+    const total = currentTickets.reduce(
+      (a, b) => a + getSubtotal(b.tickets),
+      0
+    );
+
+    return total;
+  }
+
+  const discountForTicket = (tickets, discount) =>
+    discount
+      ? `$ ${ccyFormat(getSubtotal(tickets))} - ${ccyFormat(
+          getDiscount(tickets, discount)
+        )}`
+      : `$ ${ccyFormat(getSubtotal(tickets))}`;
   const list = () => (
     <Box sx={{ width: 320 }}>
       <List>
@@ -50,20 +80,23 @@ export default function ShoppingList() {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary={`Total: ${ccyFormat(getTotalCost())}`} />
+          <ListItemText
+            primary={`Total: ${ccyFormat(getTotalCost())}`}
+            secondary={`you saved: ${ccyFormat(totalDiscount())}`}
+          />
         </ListItem>
-        <ListItem onClick={() => null} button>
+        <ListItem onClick={() => alert("TODO")} button>
           <ListItemText primary="check out" />
         </ListItem>
         <Divider />
         {currentTickets.map(
-          ({ title, tickets }) =>
+          ({ title, tickets, discount }) =>
             getSubtotal(tickets) !== 0 && (
               <div key={title}>
                 <ListItemButton onClick={null}>
                   <ListItemText
                     primary={title}
-                    secondary={`$ ${ccyFormat(getSubtotal(tickets))}`}
+                    secondary={discountForTicket(tickets, discount)}
                   />
                 </ListItemButton>
                 <List component="div" disablePadding>
