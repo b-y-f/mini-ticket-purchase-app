@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -6,17 +5,11 @@ import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import {
-  Collapse,
-  Fab,
-  IconButton,
-  ListItemButton,
-  Typography,
-} from "@mui/material";
+import { Fab, IconButton, ListItemButton } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useCart } from "../contexts/Cart";
+import ccyFormat from "../utl/convert";
 
 const fabStyle = {
   position: "fixed",
@@ -25,8 +18,8 @@ const fabStyle = {
 };
 
 export default function ShoppingList() {
-  const { selectedTickets } = useCart();
-  console.log("selectedTickets", selectedTickets);
+  const { currentTickets } = useCart();
+  // console.log("currentTickets", currentTickets);
 
   const [state, setState] = useState(false);
 
@@ -41,51 +34,62 @@ export default function ShoppingList() {
     setState(open);
   };
 
-  const [open, setOpen] = useState(true);
+  function getSubtotal(tickets) {
+    return tickets.reduce((a, b) => a + b.sumCost, 0);
+  }
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
+  function getTotalCost() {
+    return currentTickets.reduce((a, b) => a + getSubtotal(b.tickets), 0);
+  }
 
   const list = () => (
-    <Box sx={{ width: 320 }} onKeyDown={toggleDrawer(false)}>
+    <Box sx={{ width: 320 }}>
       <List>
         <ListItem>
           <ListItemText primary="Your tickets" />
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Total: 232" />
+          <ListItemText primary={`Total: ${ccyFormat(getTotalCost())}`} />
         </ListItem>
-        {/* TODO */}
-        <ListItem onClick={() => handleClick} button>
+        <ListItem onClick={() => null} button>
           <ListItemText primary="check out" />
         </ListItem>
         <Divider />
-
-        <>
-          <ListItemButton onClick={handleClick}>
-            <ListItemText
-              primary="{title}"
-              secondary="$ totalCostByTitle(title)"
-            />
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem
-                sx={{ pl: 4 }}
-                secondaryAction={
-                  <IconButton edge="end" aria-label="delete">
-                    <ClearIcon color="error" fontSize="small" />
-                  </IconButton>
-                }
-              >
-                <ListItemText primary="{t.type}" secondary="dfgdgfdg" />
-              </ListItem>
-            </List>
-          </Collapse>
-        </>
+        {currentTickets.map(
+          ({ title, tickets }) =>
+            getSubtotal(tickets) !== 0 && (
+              <div key={title}>
+                <ListItemButton onClick={null}>
+                  <ListItemText
+                    primary={title}
+                    secondary={`$ ${ccyFormat(getSubtotal(tickets))}`}
+                  />
+                </ListItemButton>
+                <List component="div" disablePadding>
+                  {tickets.map(
+                    ({ label, id, qty, unit }) =>
+                      qty !== 0 && (
+                        <ListItem
+                          key={id}
+                          sx={{ pl: 4 }}
+                          secondaryAction={
+                            <IconButton edge="end" aria-label="delete">
+                              <ClearIcon color="error" fontSize="small" />
+                            </IconButton>
+                          }
+                        >
+                          <ListItemText
+                            primary={label}
+                            secondary={`${qty} x ${unit}`}
+                          />
+                        </ListItem>
+                      )
+                  )}
+                </List>
+              </div>
+            )
+        )}
       </List>
     </Box>
   );
@@ -93,9 +97,17 @@ export default function ShoppingList() {
   return (
     <div>
       <>
-        <Fab variant="extended" onClick={toggleDrawer(true)} sx={fabStyle}>
-          <ShoppingCartIcon />$ 232.23
-        </Fab>
+        {getTotalCost() !== 0 ? (
+          <Fab variant="extended" onClick={toggleDrawer(true)} sx={fabStyle}>
+            <ShoppingCartIcon />
+            {`$ ${ccyFormat(getTotalCost())}`}
+          </Fab>
+        ) : (
+          <Fab onClick={toggleDrawer(true)} sx={fabStyle}>
+            <ShoppingCartIcon />
+          </Fab>
+        )}
+
         <Drawer anchor="right" open={state} onClose={toggleDrawer(false)}>
           {list()}
         </Drawer>
@@ -103,18 +115,3 @@ export default function ShoppingList() {
     </div>
   );
 }
-
-// ShoppingList.propTypes = {
-//   listOfTickets: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       title: PropTypes.string,
-//       selectedTicket: PropTypes.arrayOf(
-//         PropTypes.shape({
-//           type: PropTypes.string,
-//           unit: PropTypes.number,
-//           qty: PropTypes.number,
-//         })
-//       ),
-//     })
-//   ).isRequired,
-// };

@@ -18,17 +18,16 @@ import {
 } from "@mui/material";
 import PropTypes, { string, number } from "prop-types";
 import { useCart } from "../contexts/Cart";
-
-const PROMOTION = { code: "ABC123", discount: 0.12 };
+import ccyFormat from "../utl/convert";
 
 export default function BuyTicket({ ticketData, eventTitle }) {
-  const { updateQty, currentTickets } = useCart();
-  console.log(currentTickets);
+  const { updateQty, applyPromo } = useCart();
 
-  // calculation
-
-  const [ticketSum, setTicketSum] = useState(null);
   const [subtotal, setSubtotal] = useState(0);
+
+  useEffect(() => {
+    setSubtotal(ticketData.reduce((a, b) => a + b.sumCost, 0));
+  }, [ticketData]);
 
   const [promoState, setPromoState] = useState({
     input: "",
@@ -36,28 +35,15 @@ export default function BuyTicket({ ticketData, eventTitle }) {
     discountAmount: 0,
   });
 
-  function sumValues(obj) {
-    return obj ? Object.values(obj).reduce((a, b) => a + b) : 0;
-  }
-  useEffect(() => {
-    // console.log(subtotal);
-    setSubtotal(sumValues(ticketSum));
-  }, [ticketSum]);
-
-  function handleQtyChange(id, type, title, qty, unit) {
-    updateQty(title, id, qty);
-    return setTicketSum({ ...ticketSum, [type]: qty * unit });
-  }
-
-  function ccyFormat(num) {
-    return num && `${num.toFixed(2)}`;
+  function handleQtyChange(id, qty, unit) {
+    updateQty(eventTitle, id, qty, unit);
   }
 
   function checkPromoCode() {
-    if (PROMOTION.code === promoState.input) {
+    if (applyPromo(eventTitle, promoState.input)) {
       return setPromoState({
         input: "",
-        discountAmount: PROMOTION.discount * subtotal,
+        discountAmount: 999999,
         isPromoted: true,
       });
     }
@@ -78,7 +64,7 @@ export default function BuyTicket({ ticketData, eventTitle }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {ticketData.map(({ id, type, label, desc, unit }) => (
+            {ticketData.map(({ id, label, desc, unit, sumCost }) => (
               <TableRow
                 key={id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -98,13 +84,7 @@ export default function BuyTicket({ ticketData, eventTitle }) {
                   <FormControl fullWidth>
                     <Select
                       onChange={({ target }) =>
-                        handleQtyChange(
-                          id,
-                          type,
-                          eventTitle,
-                          target.value,
-                          unit
-                        )
+                        handleQtyChange(id, target.value, unit)
                       }
                       defaultValue={0}
                       variant="standard"
@@ -117,9 +97,7 @@ export default function BuyTicket({ ticketData, eventTitle }) {
                     </Select>
                   </FormControl>
                 </TableCell>
-                <TableCell align="right">
-                  {ticketSum && ccyFormat(ticketSum[type])}
-                </TableCell>
+                <TableCell align="right">{ccyFormat(sumCost)}</TableCell>
               </TableRow>
             ))}
 
@@ -128,19 +106,15 @@ export default function BuyTicket({ ticketData, eventTitle }) {
                 {promoState.isPromoted && (
                   <TableRow selected>
                     <TableCell colSpan={2} />
-                    <TableCell>
-                      Discount ({PROMOTION.discount * 100}%)
-                    </TableCell>
-                    <TableCell align="right">
-                      {ccyFormat(promoState.discountAmount)}
-                    </TableCell>
+                    <TableCell>Discount 8%</TableCell>
+                    <TableCell align="right">12</TableCell>
                   </TableRow>
                 )}
                 <TableRow selected>
                   <TableCell colSpan={2} />
                   <TableCell sx={{ fontWeight: "bold" }}>Sub Total</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }} align="right">
-                    {ccyFormat(subtotal - promoState.discountAmount)}
+                    {ccyFormat(subtotal)}
                   </TableCell>
                 </TableRow>
               </>
@@ -163,7 +137,10 @@ export default function BuyTicket({ ticketData, eventTitle }) {
               setPromoState({ ...promoState, input: target.value })
             }
           />
-          <Button onClick={() => checkPromoCode()} variant="contained">
+          <Button
+            onClick={() => checkPromoCode(eventTitle, promoState.input)}
+            variant="contained"
+          >
             apply
           </Button>
         </Stack>

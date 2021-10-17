@@ -122,7 +122,11 @@ export default function TicketCard({ data }) {
             <Typography>{data.desc}</Typography>
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <BuyTicket ticketData={data.tickets} eventTitle={data.title} />
+            <BuyTicket
+              ticketData={data.tickets}
+              eventTitle={data.title}
+              subtotal={data.subtotal}
+            />
           </TabPanel>
         </CardContent>
       </Collapse>
@@ -132,6 +136,7 @@ export default function TicketCard({ data }) {
 TicketCard.propTypes = {
   data: PropTypes.shape({
     title: string,
+    subtotal: number,
     photoURL: string,
     location: string,
     desc: string,
