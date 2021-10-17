@@ -5,13 +5,18 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import { Fab } from "@mui/material";
+import {
+  Collapse,
+  Fab,
+  IconButton,
+  ListItemButton,
+  Typography,
+} from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import PropTypes from "prop-types";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import ClearIcon from "@mui/icons-material/Clear";
+import { useCart } from "../contexts/Cart";
 
 const fabStyle = {
   position: "fixed",
@@ -19,7 +24,10 @@ const fabStyle = {
   right: 24,
 };
 
-export default function ShoppingList({ listOfTickets }) {
+export default function ShoppingList() {
+  const { selectedTickets } = useCart();
+  console.log("selectedTickets", selectedTickets);
+
   const [state, setState] = useState(false);
 
   const toggleDrawer = (open) => (event) => {
@@ -33,28 +41,51 @@ export default function ShoppingList({ listOfTickets }) {
     setState(open);
   };
 
+  const [open, setOpen] = useState(true);
+
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
   const list = () => (
-    <Box sx={{ width: 300 }} onKeyDown={toggleDrawer(false)}>
+    <Box sx={{ width: 320 }} onKeyDown={toggleDrawer(false)}>
       <List>
         <ListItem>
           <ListItemText primary="Your tickets" />
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Total: 99999" />
+          <ListItemText primary="Total: 232" />
         </ListItem>
-        <ListItem button>
+        {/* TODO */}
+        <ListItem onClick={() => handleClick} button>
           <ListItemText primary="check out" />
         </ListItem>
         <Divider />
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+
+        <>
+          <ListItemButton onClick={handleClick}>
+            <ListItemText
+              primary="{title}"
+              secondary="$ totalCostByTitle(title)"
+            />
+            {open ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                sx={{ pl: 4 }}
+                secondaryAction={
+                  <IconButton edge="end" aria-label="delete">
+                    <ClearIcon color="error" fontSize="small" />
+                  </IconButton>
+                }
+              >
+                <ListItemText primary="{t.type}" secondary="dfgdgfdg" />
+              </ListItem>
+            </List>
+          </Collapse>
+        </>
       </List>
     </Box>
   );
@@ -62,8 +93,8 @@ export default function ShoppingList({ listOfTickets }) {
   return (
     <div>
       <>
-        <Fab onClick={toggleDrawer(true)} sx={fabStyle}>
-          <ShoppingCartIcon />
+        <Fab variant="extended" onClick={toggleDrawer(true)} sx={fabStyle}>
+          <ShoppingCartIcon />$ 232.23
         </Fab>
         <Drawer anchor="right" open={state} onClose={toggleDrawer(false)}>
           {list()}
@@ -73,17 +104,17 @@ export default function ShoppingList({ listOfTickets }) {
   );
 }
 
-ShoppingList.propTypes = {
-  listOfTickets: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      selectedTicket: PropTypes.arrayOf(
-        PropTypes.shape({
-          type: PropTypes.string,
-          unit: PropTypes.number,
-          qty: PropTypes.number,
-        })
-      ),
-    })
-  ).isRequired,
-};
+// ShoppingList.propTypes = {
+//   listOfTickets: PropTypes.arrayOf(
+//     PropTypes.shape({
+//       title: PropTypes.string,
+//       selectedTicket: PropTypes.arrayOf(
+//         PropTypes.shape({
+//           type: PropTypes.string,
+//           unit: PropTypes.number,
+//           qty: PropTypes.number,
+//         })
+//       ),
+//     })
+//   ).isRequired,
+// };

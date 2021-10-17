@@ -20,5 +20,7 @@ module.exports = {
   rules: {
     "prettier/prettier": "error",
     "react/jsx-props-no-spreading": "off",
+    "no-console": "off",
+    "no-alert": "off",
   },
 };

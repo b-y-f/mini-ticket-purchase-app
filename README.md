@@ -1,45 +1,59 @@
 ---
 Project Name: mini-ticket-purchase-app-2021
-Database : MongoDB 
-Server : Apollo Server
-Front-End: React
-Deployment: Heroku
-Approximate Time: 
-node: v16.10.0
-npm: 7.24.1
+Front-End: Reactsn
 ---
 
-# start develop
+# how to start dev
 ```
 npm i 
 npm start
 ```
 
-
-
 # Client
-
-## Dependency
-
-prettier
-
-https://www.npmjs.com/package/prettier
-
-Eslint
-
-https://github.com/prettier/eslint-config-prettier#installation
-
-React 
-
-https://www.npmjs.com/package/eslint-plugin-react
-
-
 
 ## Website Logic
 
 When user enter the URL of the website, he will be navigate to`TicketPage.jsx` and he could browse all those available events as well as event details and add the ticket they want to buy,  the cart will be holding the selected ticket state. 
 
-When they decided to checkout, after hit that button total cost would be displayed, there are two available choice, one is for purchase as a guest, another is purchase as a signed member.  As a signed user, they could see their history orders(ref to database). As a guest probably a email with a reference code and list of tickets would be send to them.  
+
+This is CartContext should be like, use context to globally manage the shopping cart could be easier than redux in small app. When I have all those data, then I can get total cost for this guest. 
+
+```json
+[{
+    id:"e0"
+    title:"ddd",
+    discount: 0.13, // if not defined
+    tickets:[{  //user selected tickets
+        id:'t0',
+        type:"students",
+        unit: 19.99,
+        qty:1
+    },{
+        id:'t1',
+        type:"adult",
+        unit:30.99,
+        qty:2
+    }]
+},{
+    ...
+}]
+    ...
+// to 1 dimention array    
+    
+[{
+    id:'123',
+    qty: 2,
+    event:'ewqe',
+    discount:0.12,
+    
+}]
+```
+
+
+
+
+
+
 
 ### Login
 
@@ -53,13 +67,16 @@ Single page show a list of available events , uses MUI cards, separate date time
 
 Click one of the event user would navigated to ticket page for that specific event. 
 
+
 ### Event Booking
 
 Material Cards to contain event descriptions url, head picture, time etc.
 
 Ticket price,  show totally cost by user add more ticket, after user hit submit button booking date, tickets number, 
 
-### Query With GraphQL
+
+
+### TODO: Query With GraphQL
 
 use `useQuery` and `gql` execute each query and get the response.
 

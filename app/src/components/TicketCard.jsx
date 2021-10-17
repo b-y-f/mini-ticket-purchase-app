@@ -122,7 +122,7 @@ export default function TicketCard({ data }) {
             <Typography>{data.desc}</Typography>
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <BuyTicket ticketData={data.ticketData} />
+            <BuyTicket ticketData={data.tickets} eventTitle={data.title} />
           </TabPanel>
         </CardContent>
       </Collapse>
@@ -135,7 +135,7 @@ TicketCard.propTypes = {
     photoURL: string,
     location: string,
     desc: string,
-    ticketData: PropTypes.arrayOf(
+    tickets: PropTypes.arrayOf(
       PropTypes.shape({
         name: string,
         label: string,
